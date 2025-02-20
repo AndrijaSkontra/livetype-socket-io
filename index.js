@@ -1,8 +1,8 @@
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import cors from "cors";
 
 const app = express();
 app.use(
@@ -23,13 +23,15 @@ const connectedUsernames = new Set();
 io.on("connection", (socket) => {
   const username = socket.handshake.query.username;
   if (!username) {
-    console.log("Username missing in connection attempt");
+    console.log("ERROR: Username missing in connection attempt");
     socket.emit("error", "Username is required");
     socket.disconnect();
     return;
   }
   if (connectedUsernames.has(username)) {
-    console.log(`Connection rejected - username '${username}' already connected`);
+    console.log(
+      `ERROR: Connection rejected - username '${username}' already connected`,
+    );
     socket.emit("error", "Username already connected");
     socket.disconnect();
   } else {
